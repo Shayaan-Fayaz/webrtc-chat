@@ -55,7 +55,7 @@ export class UserManager {
             return;
         }
 
-        const room = this.roomManager.createRoom(user1, user2);
+        this.roomManager.createRoom(user1, user2);
         this.clearQueue();
     }
 
@@ -65,7 +65,9 @@ export class UserManager {
             if(message.type === "createOffer"){
                 this.roomManager.onOffer(message.roomId, message.sdp, socket)
             }else if(message.type === "createAnswer"){
-                
+                this.roomManager.onAnswer(message.roomId, message.sdp, socket)
+            }else if(message.type === "iceCandidate"){
+                this.roomManager.onIceCandidate(message.roomId, message.candidate, socket);
             }
         });
     }

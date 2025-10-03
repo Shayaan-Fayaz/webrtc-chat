@@ -52,7 +52,31 @@ export class RoomManager {
         }))
     }
 
-    // onAnswer(roomId: string, sdp: string, reciv)
+    onAnswer(roomId: string, sdp: string, receiverSocket: WebSocket){
+        const room = this.rooms.get(roomId);
+        if(!room){
+            return;
+        }
+        const senderSocket:User = room.user1.socket === receiverSocket ? room.user2 : room.user1;
+        senderSocket?.socket.send(JSON.stringify({
+            type: "createAnswer",
+            sdp
+        }))
+    }
+
+    onIceCandidate(roomId: string, candidate: any, senderSocket: WebSocket){
+        const room = this.rooms.get(roomId);
+        if(!room){
+            return;
+        }
+
+        const receiver: User = room.user1.socket === senderSocket ? room.user2 : room.user1;
+
+        receiver.socket.send(JSON.stringify({
+            type: "iceCandidate",
+            candidate: candidate
+        }))
+    }
 
 
     generate(){
